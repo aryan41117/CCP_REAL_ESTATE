@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Homes - Find Your Property</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Dream Homes</h1>
+        <nav>
+            <a href="{{ url_for('view_properties') }}">View Properties</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </nav>
+    </header>
+
+    <main>
+        {% if current_user.user_type == 'buyer' %}
+            <!-- Display properties list directly for buyers -->
+            <p>Welcome! You can now browse properties and express interest in any that catch your eye.</p>
+            
+        {% elif current_user.user_type == 'seller' %}
+            <!-- Display seller's add property form -->
+            <section class="property-add form-container">
+                <h2>Add New Property</h2>
+                <form action="{{ url_for('add_property') }}" method="POST" enctype="multipart/form-data">
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" name="location" required>
+
+                    <label for="price">Price:</label>
+                    <input type="number" id="price" name="price" required>
+
+                    <label for="size">Size (e.g., 1BHK, 2BHK):</label>
+                    <input type="text" id="size" name="size" required>
+
+                    <label for="facilities">Facilities:</label>
+                    <div>
+                        <input type="checkbox" name="facilities" value="Gym"> Gym
+                        <input type="checkbox" name="facilities" value="Aldi"> Aldi
+                        <input type="checkbox" name="facilities" value="Tesco"> Tesco
+                        <input type="checkbox" name="facilities" value="Lidl"> Lidl
+                        <input type="checkbox" name="facilities" value="Cafe"> Cafe
+                        <input type="checkbox" name="facilities" value="Restaurants"> Restaurants
+                        <input type="checkbox" name="facilities" value="Bars"> Bars
+                    </div>
+                    <div>
+                        <label for="photo">Upload Photo:</label>
+                        <input type="file" id="photo" name="photo" accept="image/*">
+                    </div>
+                    
+                    <button type="submit">Add Property</button>
+                </form>
+            </section>
+        {% endif %}
+    </main>
+</body>
+</html>

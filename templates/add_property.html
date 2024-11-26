@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Homes - Add Property</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1>Real Estate Listing</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('view_properties') }}">View Properties</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="alert {{ 'alert-' + category }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <div class="form-container">
+            <h2>Add New Property</h2>
+            <!-- Add enctype attribute for file uploads -->
+            <form action="{{ url_for('add_property') }}" method="POST" enctype="multipart/form-data">
+                <!-- Location Input -->
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" placeholder="Enter property location" required>
+
+                <!-- Price Input -->
+                <label for="price">Price:</label>
+                <input type="number" id="price" name="price" placeholder="Enter property price (e.g., 100000)" step="0.01" required>
+
+                <!-- Size Input -->
+                <label for="size">Size (e.g., 1BHK, 2BHK):</label>
+                <input type="text" id="size" name="size" placeholder="e.g., 1BHK, 2BHK" required>
+
+                <!-- Facilities Selection -->
+                <label for="facilities">Facilities:</label>
+                <div class="nearby-facilities">
+                    <label><input type="checkbox" name="facilities" value="Gym"> Gym</label>
+                    <label><input type="checkbox" name="facilities" value="Aldi"> Aldi</label>
+                    <label><input type="checkbox" name="facilities" value="Tesco"> Tesco</label>
+                    <label><input type="checkbox" name="facilities" value="Lidl"> Lidl</label>
+                    <label><input type="checkbox" name="facilities" value="Cafe"> Cafe</label>
+                    <label><input type="checkbox" name="facilities" value="Restaurants"> Restaurants</label>
+                    <label><input type="checkbox" name="facilities" value="Bars"> Bars</label>
+                </div>
+
+                <!-- Upload Photo Input -->
+                <label for="photo">Upload Photo:</label>
+                <input type="file" id="photo" name="photo" accept="image/*" required>
+                <p id="photo-label" class="file-label">No file chosen</p>
+
+                <!-- JavaScript to update the label dynamically -->
+                <script>
+                    const photoInput = document.getElementById('photo');
+                    const photoLabel = document.getElementById('photo-label');
+                    
+                    photoInput.addEventListener('change', () => {
+                        photoLabel.textContent = photoInput.files[0]?.name || 'No file chosen';
+                    });
+                </script>
+
+                <!-- Submit Button -->
+                <button type="submit">Add Property</button>
+            </form>
+
+            <div class="form-actions">
+                <a href="{{ url_for('view_properties') }}" class="btn">View Properties</a>
+                <a href="{{ url_for('home') }}" class="btn">Back to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Real Estate Listing. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>

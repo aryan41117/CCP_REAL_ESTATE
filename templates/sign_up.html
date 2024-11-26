@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Dream Homes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Dream Homes - Sign Up</h1>
+    </header>
+
+    <main>
+        <section class="sign-up-form form-container">
+            <h2>Create an Account</h2>
+
+            <!-- Display Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul>
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('sign_up') }}" method="POST">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="password1">Password:</label>
+                <input type="password" id="password1" name="password1" required>
+
+                <label for="password2">Confirm Password:</label>
+                <input type="password" id="password2" name="password2" required>
+
+                <label for="user_type">Account Type:</label>
+                <select id="user_type" name="user_type">
+                    <option value="buyer">Buyer</option>
+                    <option value="seller">Seller</option>
+                </select>
+
+                <button type="submit">Sign Up</button>
+            </form>
+
+            <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+        </section>
+    </main>
+</body>
+</html>

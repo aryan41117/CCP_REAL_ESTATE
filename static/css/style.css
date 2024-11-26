@@ -1,0 +1,320 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('https://st.hzcdn.com/simgs/pictures/exteriors/award-winning-energy-efficient-timberframe-kim-smith-photo-img~0f51f91d08d01a91_8-3427-1-cbf915a.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #333;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Header */
+header {
+    width: 100%;
+    background-color: rgba(52, 73, 94, 0.8); /* Slightly transparent to blend with background */
+    color: #fff;
+    padding: 20px;
+    text-align: left;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for header */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+header h1 {
+    font-size: 2rem;
+    display: inline-block;
+    margin: 0;
+}
+
+header nav {
+    display: inline-block;
+    margin-left: 30px;
+}
+
+header nav a {
+    color: #ecf0f1;
+    text-decoration: none;
+    margin-right: 15px;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+header nav a:hover {
+    color: #bdc3c7;
+}
+
+/* Styling for Location and Filter buttons */
+header .nav-and-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between the buttons */
+}
+
+header .nav-and-filter select, 
+header .filter-form button {
+    padding: 8px 12px; /* Reduced padding for smaller buttons */
+    font-size: 0.9rem; /* Slightly smaller font size */
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+header .nav-and-filter select:hover, 
+header .filter-form button:hover {
+    background-color: #2980b9;
+}
+
+header .logout-button {
+    background-color: #c0392b;
+    color: white;
+    text-decoration: none;
+    padding: 8px 12px; /* Reduced padding for logout button */
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+header .logout-button:hover {
+    background-color: #e74c3c;
+}
+
+/* Main Content */
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Full viewport height for vertical centering */
+    padding: 20px;
+    box-sizing: border-box;
+    margin-top: 80px; /* Avoid overlap with fixed header */
+}
+
+/* Form Container */
+.form-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent to blend with background */
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    margin: 100px auto 0 auto;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Form Heading */
+h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+/* Flash Messages Container */
+.flash-messages {
+    margin: 20px auto;
+    max-width: 600px;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Success Message Style */
+.alert-success {
+    background-color: #d4edda; /* Light green background */
+    color: #155724;          /* Dark green text */
+    border: 1px solid #c3e6cb; /* Green border */
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+/* Error Message Style */
+.alert-error {
+    background-color: #f8d7da; /* Light red background */
+    color: #721c24;           /* Dark red text */
+    border: 1px solid #f5c6cb; /* Red border */
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+/* Form Label */
+form label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+}
+
+/* Form Inputs */
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="number"],
+form select,
+form textarea,
+form input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+/* Nearby Facilities Section */
+.nearby-facilities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.nearby-facilities label {
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.nearby-facilities input[type="checkbox"] {
+    accent-color: #2980b9;
+}
+
+/* Button Styling */
+form button {
+    width: 100%;
+    padding: 15px;
+    background-color: #2980b9;
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #3498db;
+}
+
+/* Form Actions (Links for Viewing Properties and Returning to Home) */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.form-actions .btn {
+    background-color: #2ecc71;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.form-actions .btn:hover {
+    background-color: #27ae60;
+}
+
+/* Footer */
+footer {
+    background-color: rgba(52, 73, 94, 0.8);
+    color: #ecf0f1;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Keyframe Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Add slight transparency to the property details row */
+.table tbody tr {
+    background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+}
+
+/* Add padding and style for the table cells */
+.table td {
+    padding: 15px;  /* Add padding for better readability */
+}
+
+/* Property Photo styling */
+.property-photo {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.property-photo:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+/* Adjust the card containing property details */
+.property-card {
+    background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.property-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.property-card p {
+    font-size: 1.1rem;
+}
+
+.property-card ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.property-card ul li {
+    font-size: 1rem;
+}
+
+/* Add slight transparency to buttons */
+.btn:hover {
+    background-color: #3498db;
+}

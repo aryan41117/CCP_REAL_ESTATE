@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Properties</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Your Properties</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('add_property') }}">Add Property</a>
+        </nav>
+    </header>
+
+    <main>
+        {% if properties %}
+            <div class="property-list">
+                {% for property in properties %}
+                    <div class="property-card">
+                        <!-- Property ID -->
+                        <p><strong>Property ID:</strong> {{ property['property_id'] }}</p>
+
+                        <!-- Property Details -->
+                        <h2>{{ property['location'] }}</h2>
+                        <p><strong>Price:</strong> ${{ property['price'] }}</p>
+                        <p><strong>Size:</strong> {{ property['size'] }}</p>
+                        <p><strong>Facilities:</strong></p>
+                        <ul>
+                            {% for facility in property['facilities'].split(', ') %}
+                                <li>{{ facility }}</li>
+                            {% endfor %}
+                        </ul>
+
+                        <!-- Property Image -->
+                        {% if property['photo_url'] %}
+                            <img src="{{ property['photo_url'] }}" alt="Property Image" class="property-image">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/placeholder.png') }}" alt="No Image Available" class="property-image">
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No properties found. <a href="{{ url_for('add_property') }}">Add a new property</a>.</p>
+        {% endif %}
+    </main>
+
+    <footer>
+        <a href="{{ url_for('add_property') }}" class="button">Add More Properties</a>
+        <a href="{{ url_for('home') }}" class="button">Back to Home</a>
+        <p>&copy; 2024 Real Estate Listing. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>
