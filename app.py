@@ -8,7 +8,7 @@ from flask_cors import CORS
 from setup_s3 import create_s3_bucket
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
-from setup_lambda import create_lambda_function, set_s3_event_notification, set_rekognition_permissions,add_lambda_permission_for_s3
+from setup_lambda import create_lambda_function, set_s3_event_notification,add_lambda_permission_for_s3
 from property_ranker_lib import filter_by_location, rank_by_price
 from setup_sns import create_sns_topic, subscribe_to_topic, send_interest_notification
 import logging
@@ -53,7 +53,6 @@ def initialize_s3_on_startup():
     create_lambda_function()
     add_lambda_permission_for_s3()
     set_s3_event_notification()
-    set_rekognition_permissions()
     sns_topic_arn = create_sns_topic("PropertyInterestTopic")  
     # Store the topic ARN for later use in publishing/subscribing
     session['sns_topic_arn'] = sns_topic_arn
@@ -238,24 +237,7 @@ def validate_file(file):
         return False
 
     return True
-    
-# Search properties route for buyers
-@app.route('/search_properties', methods=['GET'])
-@login_required
-def search_properties():
-    location = request.args.get('location')
-    min_price = request.args.get('min_price')
-    max_price = request.args.get('max_price')
-    facilities = request.args.getlist('facilities')
-
-    # Query and rank properties
-    properties = query_properties(location, min_price, max_price, facilities)
-    ranked_properties = rank_by_price(properties)
-
-    # Render the property list template with filtered properties
-    return render_template('property_lists.html', properties=ranked_properties)
-
-    
+     
 
 @app.route('/express_interest/<property_id>', methods=['POST'])
 @login_required

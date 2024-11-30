@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\yoyas\OneDrive\Documents\flask-real-estate\venv
+set VIRTUAL_ENV=C:\Users\yoyas\OneDrive\Documents\Final_CPP_Real_Estate\venv
 
 if not defined PROMPT set PROMPT=$P$G
 

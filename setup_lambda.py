@@ -1,8 +1,5 @@
 import boto3
 import zipfile
-import os
-import json
-import botocore.exceptions
 from config import Config  # Importing config class from config.py
 from botocore.exceptions import ClientError
 import pymysql
@@ -149,7 +146,7 @@ def get_db():
         print(f"Database connection error: {e}")
         raise
 
-def lambda_handler(event, context):
+def lambda_handler(event,context):
     # Extract bucket name and image key from the S3 event
     bucket = event['Records'][0]['s3']['bucket']['name']
     key = event['Records'][0]['s3']['object']['key']
@@ -210,8 +207,3 @@ def delete_property_from_db(property_id):
     finally:
         conn.close()
 
-# Step 4: Set or check Rekognition permissions for Lambda function
-# Step 4: Set Rekognition permissions for the Lambda function
-def set_rekognition_permissions():
-    # Assuming LabRole already has permissions for Rekognition and S3
-    print(f"Rekognition and S3 permissions are already set for Lambda function using the LabRole.")
