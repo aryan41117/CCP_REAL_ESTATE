@@ -14,31 +14,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Step 2: Set up Docker Buildx
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      # Step 3: Install Docker Compose
-      - name: Install Docker Compose
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
-
-      # Step 4: Log in to Docker Hub
+      # Step 2: Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 5: Build and push Docker image
+      # Step 3: Build and push Docker image
       - name: Build and push Docker image
         run: |
           docker-compose -f docker-compose.yml build
           docker-compose -f docker-compose.yml push
 
-      # Step 6: SSH into EC2 and deploy
+      # Debugging Step: Verify SSH key and connectivity
+      - name: Test EC2 SSH Connection
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "SSH connection successful!"
+
+      # Step 4: Deploy to EC2
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
@@ -47,12 +47,7 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           port: 22
           script: |
-            # Pull the latest Docker image
-            docker pull aryan4117/finalcpprealestate:latest
-            
-            # Stop and remove any existing container
+            docker pull your-dockerhub-username/finalcpprealestate:latest
             docker stop flask_app || true
             docker rm flask_app || true
-            
-            # Run the new container
-            docker run -d -p 8080:8080 --name flask_app aryan4117/finalcpprealestate:latest
+            docker run -d -p 8080:8080 --name flask_app your-dockerhub-username/finalcpprealestate:latest
