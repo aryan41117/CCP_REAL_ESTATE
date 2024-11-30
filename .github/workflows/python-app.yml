@@ -1,0 +1,58 @@
+name: CI/CD Pipeline for Flask Application
+
+on:
+  push:
+    branches:
+      - main  # You can specify other branches if necessary
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # Set up Docker
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    # Login to Docker Hub or ECR
+    - name: Docker login to Docker Hub (or ECR)
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}  # Add your Docker Hub username to GitHub secrets
+        password: ${{ secrets.DOCKER_PASSWORD }}  # Add your Docker Hub password to GitHub secrets
+
+    # For AWS ECR login (uncomment below if you're using ECR)
+    # - name: Docker login to Amazon ECR
+    #   uses: aws-actions/amazon-ecr-login@v1
+
+    # Build Docker image using Docker Compose
+    - name: Build Docker image using Docker Compose
+      run: |
+        docker-compose -f docker-compose.yml build
+
+    # Push Docker image to Docker Hub (or ECR)
+    - name: Push Docker image to Docker Hub (or ECR)
+      run: |
+        docker-compose -f docker-compose.yml push
+
+    # Deploy to EC2 instance
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v0.1.0
+      with:
+        host: ${{ secrets.EC2_HOST }}  # EC2 instance IP address or hostname
+        username: ${{ secrets.EC2_USERNAME }}  # EC2 instance username, e.g., ec2-user or ubuntu
+        key: ${{ secrets.EC2_PRIVATE_KEY }}  # EC2 private key (add to GitHub secrets)
+        port: 22
+        script: |
+          # SSH into EC2 instance and pull the latest image, stop the running container, and restart it
+          docker pull <your-dockerhub-username>/finalcpprealestate:latest  # Change to your ECR or Docker Hub repo
+          docker stop flask_app || true  # Stop existing container if running
+          docker rm flask_app || true  # Remove existing container
+          docker run -d -p 8080:8080 --name flask_app <your-dockerhub-username>/finalcpprealestate:latest  # Change to your ECR or Docker Hub repo
+
