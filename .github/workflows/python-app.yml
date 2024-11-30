@@ -44,9 +44,6 @@ jobs:
         key: ${{ secrets.EC2_PRIVATE_KEY }}  # Private key from GitHub Secrets
         port: 22  # EC2 SSH port (default is 22)
         script: |
-          # Debugging Step: Check if EC2 is accessible and key is correct
-          echo "Checking SSH access to EC2..."
-
           # Pull the latest image from Docker Hub
           docker pull aryan4117/finalcpprealestate:latest  # Replace with your actual Docker Hub username
 
