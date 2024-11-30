@@ -13,7 +13,7 @@ def create_s3_bucket(bucket_name, region=Config.AWS_REGION):
         # Create a session using the specified region
         s3_client = boto3.client('s3', region_name=region,
                                  aws_access_key_id=Config.AWS_ACCESS_KEY,
-                                 aws_secret_access_key=Config.AWS_SECRET_KEY)
+                                 aws_secret_access_key=Config.AWS_SECRET_ACCESS_KEY)
         
         # Check if the bucket already exists
         existing_buckets = s3_client.list_buckets()

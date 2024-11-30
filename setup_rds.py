@@ -1,7 +1,8 @@
+import os
 import boto3
 
 def check_rds_instance_exists(db_instance_identifier):
-    rds_client = boto3.client('rds')
+    rds_client = boto3.client('rds', region_name=os.getenv('AWS_REGION'))
     try:
         response = rds_client.describe_db_instances(DBInstanceIdentifier=db_instance_identifier)
         if response['DBInstances']:
@@ -14,7 +15,7 @@ def check_rds_instance_exists(db_instance_identifier):
         return False
 
 def create_rds_instance(db_instance_identifier, master_username, master_password):
-    rds_client = boto3.client('rds')
+    rds_client = boto3.client('rds', region_name=os.getenv('AWS_REGION'))
     
     if check_rds_instance_exists(db_instance_identifier):
         return True  # Skip creation if instance already exists
