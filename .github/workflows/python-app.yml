@@ -24,7 +24,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
-        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin# Docker Hub password or personal access token stored in GitHub secrets
+        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME"
 
     # Step 4: Build the Docker image using Docker Compose
     - name: Build Docker image
