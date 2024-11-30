@@ -42,8 +42,8 @@ jobs:
         echo "${{ secrets.EC2_KEY }}" > /tmp/ec2_key.pem
         chmod 600 /tmp/ec2_key.pem
 
-        - name: Debug SSH Connection
-        run: |
+    - name: Debug SSH Connection
+      run: |
           # Verify the key format
           cat /tmp/ec2_key.pem
           
