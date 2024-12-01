@@ -1,6 +1,7 @@
 services:
   flask_app:
     build: .
+    image: final_cpp_real_estate-flask_app  
     ports:
       - "8080:8080"
     env_file:
