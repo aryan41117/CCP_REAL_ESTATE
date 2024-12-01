@@ -64,6 +64,10 @@ jobs:
     # Step 8: Copy code to EC2
     - name: Copy code to EC2
       run: |
+        # Ensure the target directory exists on the EC2 instance
+        ssh -i /tmp/ec2_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "mkdir -p /home/${{ secrets.EC2_USER }}/your-repository"
+        
+        # Now copy the files using scp
         scp -i /tmp/ec2_key.pem -o StrictHostKeyChecking=no -r $GITHUB_WORKSPACE/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/your-repository
 
     # Step 9: Deploy to EC2 using Docker Compose
