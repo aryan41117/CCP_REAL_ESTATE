@@ -31,10 +31,15 @@ jobs:
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
     # Step 4: Build and push Docker image using docker-compose
-    - name: Build and push Docker image
+    - name: Build Docker image
       run: |
         docker-compose build  # Build the image defined in docker-compose.yml
-        docker-compose push   # Push the image to Docker Hub
+        
+
+    - name: Push Docker Image to Docker Hub
+      run: |
+        # Push the Docker image to Docker Hub
+        docker push ${{ secrets.DOCKER_REPOSITORY }}:latest
 
     # Step 5: Configure SSH Key for EC2
     - name: Configure SSH Key
