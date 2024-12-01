@@ -91,17 +91,14 @@ jobs:
             sudo apt-get install -y docker.io
           fi
     
-          # Install Docker Compose if not already installed
-          if ! command -v docker-compose &> /dev/null; then
-            sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-\$(uname -s)-\$(uname -m)" -o /usr/local/bin/docker-compose
-            sudo chmod +x /usr/local/bin/docker-compose
-          fi
+          
     
           # Log in to Docker Hub on the EC2 instance
           echo "\$DOCKER_PASSWORD" | sudo docker login -u "\$DOCKER_USERNAME" --password-stdin
     
-          # Pull the latest Docker image from Docker Hub
-          sudo docker-compose pull
+          
+           # Force pull the latest Docker image from Docker Hub
+          sudo docker pull --quiet "$DOCKER_REPOSITORY:latest"
     
           # Stop and remove the old container if it exists
           if sudo docker ps -a --format '{{.Names}}' | grep -Eq '^flask_app$'; then
