@@ -54,7 +54,6 @@ jobs:
           ssh -vvv -i /tmp/ec2_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'Connected!'"
 
 
-    # Step 6: Deploy to EC2 using Docker Compose
     - name: Deploy to EC2
       env:
         EC2_HOST: ${{ secrets.EC2_HOST }}
@@ -67,31 +66,35 @@ jobs:
         
         # Connect to the EC2 instance and deploy the application using Docker Compose
         ssh -i /tmp/ec2_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST <<EOF
-          
+          # Export environment variables inside the SSH session
+          export DOCKER_REPOSITORY="${{ secrets.DOCKER_REPOSITORY }}"
+          export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
+          export DOCKER_PASSWORD="${{ secrets.DOCKER_PASSWORD }}"
+    
           # Check if DOCKER_REPOSITORY is set to avoid invalid reference errors
           if [ -z "\$DOCKER_REPOSITORY" ]; then
             echo "Error: DOCKER_REPOSITORY is not set. Exiting."
             exit 1
           fi
-
+    
           # Install Docker if not already installed
           if ! command -v docker &> /dev/null; then
             sudo apt-get update
             sudo apt-get install -y docker.io
           fi
-
+    
           # Install Docker Compose if not already installed
           if ! command -v docker-compose &> /dev/null; then
-            sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-\$(uname -s)-\$(uname -m)" -o /usr/local/bin/docker-compose
             sudo chmod +x /usr/local/bin/docker-compose
           fi
     
           # Log in to Docker Hub on the EC2 instance
           echo "\$DOCKER_PASSWORD" | sudo docker login -u "\$DOCKER_USERNAME" --password-stdin
     
-          # Force pull the latest Docker image from Docker Hub
+          # Pull the latest Docker image from Docker Hub
           sudo docker-compose pull
-
+    
           # Stop and remove the old container if it exists
           if sudo docker ps -a --format '{{.Names}}' | grep -Eq '^flask_app$'; then
             echo "Stopping and removing the old container."
@@ -101,7 +104,8 @@ jobs:
           # Start the application using Docker Compose
           sudo docker-compose up -d
         EOF
-
     
     
         
+        
+            
