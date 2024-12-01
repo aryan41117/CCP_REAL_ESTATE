@@ -30,23 +30,26 @@ jobs:
       run: |
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-    # Step 4: Build and push Docker image using docker-compose
+      # Step 4: Build Docker image using docker-compose
     - name: Build Docker image
       run: |
         docker-compose build  # Build the image defined in docker-compose.yml
         
+        # Tag the built image with the repository name from the secrets
+        docker tag final_cpp_real_estate-flask_app:latest ${{ secrets.DOCKER_REPOSITORY }}:latest
 
+    # Step 5: Push Docker Image to Docker Hub
     - name: Push Docker Image to Docker Hub
       run: |
-        # Push the Docker image to Docker Hub
         docker push ${{ secrets.DOCKER_REPOSITORY }}:latest
 
-    # Step 5: Configure SSH Key for EC2
+
+    # Step 6: Configure SSH Key
     - name: Configure SSH Key
       run: |
         echo "${{ secrets.EC2_KEY }}" > /tmp/ec2_key.pem
         chmod 600 /tmp/ec2_key.pem
-
+    # Step 7: Configure SSH Key for EC2
     - name: Debug SSH Connection
       run: |
           # Verify the key format
@@ -58,7 +61,7 @@ jobs:
           # Attempt connection (add verbose mode for debugging)
           ssh -vvv -i /tmp/ec2_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'Connected!'"
 
-
+    # Step 8: Deploy to EC2
     - name: Deploy to EC2
       env:
         EC2_HOST: ${{ secrets.EC2_HOST }}
