@@ -2,9 +2,9 @@ name: CI/CD Pipeline to EC2 with Docker Compose
 
 on:
   push:
-    branches: [ main ]  # Trigger on push to the main branch
+    branches: [ main ]
   pull_request:
-    branches: [ main ]  # Trigger on pull requests to the main branch
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -30,7 +30,7 @@ jobs:
       run: |
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-      # Step 4: Build Docker image using docker-compose
+    # Step 4: Build Docker image using docker-compose
     - name: Build Docker image
       run: |
         docker-compose build  # Build the image defined in docker-compose.yml
@@ -43,23 +43,18 @@ jobs:
       run: |
         docker push ${{ secrets.DOCKER_REPOSITORY }}:latest
 
-
     # Step 6: Configure SSH Key
     - name: Configure SSH Key
       run: |
         echo "${{ secrets.EC2_KEY }}" > /tmp/ec2_key.pem
         chmod 600 /tmp/ec2_key.pem
-    # Step 7: Configure SSH Key for EC2
+
+    # Step 7: Verify SSH Connection
     - name: Debug SSH Connection
       run: |
-          # Verify the key format
-          cat /tmp/ec2_key.pem
-          
-          # Verify permissions
-          ls -l /tmp/ec2_key.pem
-          
-          # Attempt connection (add verbose mode for debugging)
-          ssh -vvv -i /tmp/ec2_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'Connected!'"
+        cat /tmp/ec2_key.pem
+        ls -l /tmp/ec2_key.pem
+        ssh -vvv -i /tmp/ec2_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'Connected!'"
 
     # Step 8: Deploy to EC2
     - name: Deploy to EC2
@@ -71,49 +66,32 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
         echo "Deploying application to EC2 instance at $EC2_HOST"
-        
-        # Connect to the EC2 instance and deploy the application using Docker Compose
         ssh -i /tmp/ec2_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST <<EOF
-          # Export environment variables inside the SSH session
           export DOCKER_REPOSITORY="${{ secrets.DOCKER_REPOSITORY }}"
           export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
           export DOCKER_PASSWORD="${{ secrets.DOCKER_PASSWORD }}"
-    
-          # Check if DOCKER_REPOSITORY is set to avoid invalid reference errors
-          if [ -z "\$DOCKER_REPOSITORY" ]; then
-            echo "Error: DOCKER_REPOSITORY is not set. Exiting."
-            exit 1
-          fi
-    
-          # Install Docker if not already installed
+
+          # Check and install Docker and Docker Compose
           if ! command -v docker &> /dev/null; then
             sudo apt-get update
             sudo apt-get install -y docker.io
           fi
-    
-          # Install Docker Compose if not already installed
           if ! command -v docker-compose &> /dev/null; then
             sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-\$(uname -s)-\$(uname -m)" -o /usr/local/bin/docker-compose
             sudo chmod +x /usr/local/bin/docker-compose
           fi
-    
-          # Log in to Docker Hub on the EC2 instance
+
+          # Log in to Docker Hub
           echo "\$DOCKER_PASSWORD" | sudo docker login -u "\$DOCKER_USERNAME" --password-stdin
-    
-          # Pull the latest Docker image from Docker Hub
+
+          # Pull the latest Docker image
           sudo docker-compose pull
-    
+
           # Stop and remove the old container if it exists
           if sudo docker ps -a --format '{{.Names}}' | grep -Eq '^flask_app$'; then
-            echo "Stopping and removing the old container."
             sudo docker-compose down
           fi
-    
-          # Start the application using Docker Compose
+
+          # Start the container with Docker Compose
           sudo docker-compose up -d
         EOF
-    
-    
-        
-        
-            
